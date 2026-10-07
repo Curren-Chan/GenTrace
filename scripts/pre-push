@@ -1,0 +1,3 @@
+#!/bin/sh
+# 過去のrefを含む公開リスクを確認する。値そのものは表示しない。
+exec python scripts/publication_audit.py --staged --history

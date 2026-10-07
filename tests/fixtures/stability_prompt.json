@@ -1,0 +1,29 @@
+{
+  "UNETLoader": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "example_anima_model.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "EmptyLatentImage": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "batch_size": 1,
+      "height": 1216,
+      "width": 832
+    }
+  },
+  "Sampler": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": ["UNETLoader", 0],
+      "seed": 1258435883,
+      "steps": 14,
+      "cfg": 1.5,
+      "sampler_name": "euler_ancestral",
+      "scheduler": "simple",
+      "latent_image": ["EmptyLatentImage", 0]
+    }
+  }
+}

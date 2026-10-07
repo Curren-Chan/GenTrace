@@ -1,0 +1,3 @@
+#!/bin/sh
+# 公開候補と、実際にコミットされるindexを検査する。
+exec python scripts/publication_audit.py --staged
