@@ -40,8 +40,9 @@ Windowsの実TkウィンドウへShell形式のdrop通知を送るテストで�
 
 ## 公開前の残課題
 
-- GitHub公開先を確定し、ZIPから新しい公開用Git履歴を作る。公開用表示名とGitHub noreplyメールをローカル設定し、旧branch/tagを持ち込まない。コミット・公開は未実施。
-- 別PCの新規導入、GitHub上のPython 3.11/3.14 CI、新規画像生成を使ったLoggerの実採取は今回未確認。
+- 2026-10-07に [Curren-Chan/GenTrace](https://github.com/Curren-Chan/GenTrace) を新しい履歴で公開。69ファイルのGit tree一致と公開履歴の再監査に合格。元の履歴・個人のDB・画像・ログ・設定は公開していない。
+- GitHub ActionsのWindows / Python 3.11・3.14でテスト・公開監査・差分チェックが合格。[初回CI結果](https://github.com/Curren-Chan/GenTrace/actions/runs/37562924252)
+- 別PCの新規導入、新規画像生成を使ったLoggerの実採取は今回未確認。
 - 任意custom node、長大workflow、全GPU構成、大量履歴の性能、UNC/network共有、Windowsのすべての長いpathは未保証。
 - 本文全文検索、gallery、画像移動・hash重複排除、workflow復元は現行の対象外。
 - PNG出力の時刻/設定による照合は曖昧になりうる。GPU使用率はアダプター全体でありComfyUI専用ではない。

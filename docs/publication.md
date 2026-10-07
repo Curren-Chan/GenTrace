@@ -12,7 +12,7 @@ python scripts/publication_audit.py --export ../GenTrace-public-source.zip
 
 最初は現在の公開候補とGit管理候補、二番目はさらにindexと全refのblob/commit/tagを検査する。古い履歴や未更新indexがある元のリポジトリでは、二番目が不合格でも現在のソースZIPの監査とは区別する。原本の.gitは配布しない。`publication-files.txt`以外のファイルはZIPへ入れず、既存ZIPを上書きしない。コピー前に同じバイト列を検査する。
 
-公開するときはZIPを新しい空フォルダへ展開し、一覧と画面を確認してから新規Gitリポジトリを作成する。過去の履歴を移さず、公開用の表示名とGitHubのnoreplyメールを**その新しいリポジトリだけ**に設定する。個人用リポジトリの設定やglobal Git設定は変更しない。旧branch/tagを追加pushしない。コミットと公開は今回未実施。
+公開するときはZIPを新しい空フォルダへ展開し、一覧と画面を確認してから新規Gitリポジトリを作成する。過去の履歴を移さず、公開用の表示名とGitHubのnoreplyメールを**その新しいリポジトリだけ**に設定する。個人用リポジトリの設定やglobal Git設定は変更しない。旧branch/tagを追加pushしない。2026-10-07に新しい履歴で [Curren-Chan/GenTrace](https://github.com/Curren-Chan/GenTrace) を公開した。元の個人用履歴は移していない。公開したソースと監査済みソースのGit treeは一致し、作者メールはGitHub noreply形式を確認済み。
 
 Gitがある環境ではローカルhookも使える。新しい公開用リポジトリで `scripts/pre-commit` を `.git/hooks/pre-commit`、`scripts/pre-push` を `.git/hooks/pre-push` へコピーする。既存hookがある場合は上書きせず、検査処理を組み込む。元の作業リポジトリにも今回この2つのhookを追加し、公開候補/indexの検査と、過去履歴をそのままpushする操作を止める。hookはcloneだけでは自動有効にならず、`--no-verify`でも回避できるため、公開直前の検査を省略しない。
 

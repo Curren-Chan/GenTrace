@@ -23,7 +23,7 @@ SQLite保存、PNG解析、LoRA抽出、ローカル動作は他の優れたツ�
 
 ## インストール
 
-対象はWindows 10/11と、Python 3.11以上のTkinter・SQLite付き環境です。この公開準備ではWindows / Python 3.11.9で検証しました。Python 3.14はCI設定に含めていますが、GitHub上のCIはまだ実行していません。
+対象はWindows 10/11と、Python 3.11以上のTkinter・SQLite付き環境です。この公開準備ではWindows / Python 3.11.9で検証しました。GitHub ActionsのWindows環境でもPython 3.11・3.14のテストと公開監査が合格しています。
 
 1. Pythonを [python.org](https://www.python.org/downloads/windows/) からインストールし、PATHとTcl/Tkを有効にします。Stability Matrixの内部Pythonとは別の、`python` / `pythonw`で起動できる環境を使用します。
 2. 公開ソースZIPを任意の書き込み可能なフォルダへ展開します。PythonやモデルのダウンロードはGenTraceに含みません。
