@@ -1,10 +1,14 @@
 # GenTrace
 
+[日本語 / Japanese](#日本語) | [English](#english)
+
+## 日本語
+
 **既存の生成環境を変更せず、生成ジョブの設定・時間・GPU使用率を手元に残すWindows用ロガー。**
 
 作者はComfyUI等でローカル画像生成を継続する中で、「どの設定で、いつ、どのくらい時間をかけて生成したか」「画像を整理した後でも生成履歴を確認したい」という不便を感じ、自分のためにGenTraceを作りました。日々の生成履歴とメタデータを管理する実用ツールとして育てています。開発にはAIの支援も利用しています。
 
-現在のバージョン: `1.1.0` / [MIT License](LICENSE)
+現在のバージョン: `1.1.1` / [MIT License](LICENSE)
 
 ![安全なデモデータで表示したViewer](docs/screenshots/viewer-demo.png)
 
@@ -114,3 +118,128 @@ python scripts/publication_audit.py
 ## バージョン規則
 
 `x.y.z`で、互換性破壊はx、互換性を保った機能追加はy、小規模改修・修正はzを更新します。一連の改修につき一度、最も大きい区分を採用し、`VERSION`・`gentrace.__version__`・README・CHANGELOGを揃えます。コミットや公開は明示的に依頼された場合に行います。
+
+---
+
+## English
+
+[日本語 / Japanese](#日本語)
+
+**A Windows logger that keeps generation settings, timings, and GPU utilization locally without changing your existing generation setup.**
+
+The author continues to generate images locally with tools such as ComfyUI. GenTrace grew out of practical frustrations: remembering which settings were used, when a job ran, how long it took, and finding that history after organizing the images. It is a tool built for the author's own ongoing generation and metadata management needs. AI assistance is also used during development.
+
+Current version: `1.1.1` / [MIT License](LICENSE)
+
+![Actual Viewer with safe demo data](docs/screenshots/viewer-demo.png)
+
+This is the actual Viewer running against a temporary database with fictional models, seeds, and dates. `C:/demo/` is a fictional reference path; the Missing status is intentional. No personal generated images or real prompts are used.
+
+### What GenTrace does
+
+- Observes ComfyUI managed by Stability Matrix in a read-only manner and stores successful, failed, and interrupted jobs in SQLite.
+- Shows GPU Engine utilization sampled approximately once per second alongside generation duration, model, LoRA names, dimensions, sampler, scheduler, steps, CFG, and seed for each job.
+- Runs Logger and Viewer independently. Closing Viewer leaves Logger recording in the notification area.
+- Imports available settings from dropped or selected PNG files. Prompt text and complete workflows are not stored in the database.
+- References images by absolute path without copying them. History and filenames remain when images disappear.
+- Filters by date, status, and model name and exports CSV. No additional pip packages or custom nodes are required.
+
+SQLite storage, PNG parsing, LoRA extraction, and local operation are also available in other capable tools. GenTrace focuses on recording history in this particular setup. For image galleries, full prompt search, workflow reconstruction, or content-hash deduplication, see the alternatives in the [competition comparison (Japanese)](docs/competition.md). GenTrace does not claim to be the only tool of its kind, to support every ComfyUI workflow, or to store no personal information.
+
+### Installation
+
+Requirements: Windows 10/11 and Python 3.11 or later with Tkinter and SQLite. Local verification used Windows / Python 3.11.9. Tests and publication audits also passed on Windows with Python 3.11 and 3.14 in GitHub Actions.
+
+1. Install Python from [python.org](https://www.python.org/downloads/windows/), enabling PATH and Tcl/Tk. Use a Python installation that can launch `python` and `pythonw`, separate from Stability Matrix's internal Python.
+2. Extract the public source ZIP into a writable folder. GenTrace does not include Python or model downloads. On GitHub, use **Code → Download ZIP**.
+3. Open PowerShell in the GenTrace folder and check:
+
+   ```powershell
+   python --version
+   python -c "import tkinter, sqlite3; print(tkinter.TkVersion, sqlite3.sqlite_version)"
+   ```
+
+4. If Stability Matrix is not in a sibling folder named `StabilityMatrix`, copy `config.example.json` to `config.local.json` and set `stability_root` to your Stability Matrix installation folder. Do not append `Data`. Use `/` or `\\` in JSON paths.
+
+   ```json
+   {
+     "stability_root": "C:/example/StabilityMatrix"
+   }
+   ```
+
+   `config.local.json`, which contains your actual path, is excluded from Git. Configuration priority is: explicit function argument → `GENTRACE_STABILITY_ROOT` environment variable → local configuration → sibling StabilityMatrix folder. `.env` files are not loaded automatically.
+
+5. Start ComfyUI through Stability Matrix and activate the package you want GenTrace to observe. API host and port are read from LaunchArgs in `Data/settings.json`. The `/api/jobs`, `/api/jobs/{id}`, and `/queue` endpoints are required. Older ComfyUI versions and all other launch configurations are not universally supported.
+6. Double-click `GenTrace.vbs`, or run:
+
+   ```powershell
+   python main.py
+   ```
+
+If nothing appears after double-clicking, use `run_console.cmd` or the console command above to inspect the error. Python launching works even when VBScript is disabled on Windows. GenTrace does not write to Stability Matrix settings, ComfyUI, or image files.
+
+### Using GenTrace
+
+The application UI currently uses Japanese labels; this bilingual README does not change the UI language.
+
+- Launch separately with `python main.py --logger` or `python main.py --viewer`. Dedicated VBS launchers are also included.
+- Closing Viewer stops only Viewer. To stop Logger, right-click its notification-area icon and choose `終了` (Exit).
+- Dates use `YYYY-MM-DD`. Model filtering matches part of the name. Choose a status and click `適用` (Apply). Automatic refresh uses the last applied filters, so editing a date does not trigger validation errors mid-entry.
+- The first column shows the filename. Double-click a column boundary to adjust its width. Use the bottom horizontal scrollbar to reach columns outside the window.
+- Select a row to see generation settings and the GPU graph. `Present` means all referenced images are available; `Missing` means some or all cannot be accessed; `Unknown` means no paths were recorded. Images without read permission may also appear as Missing.
+- Open an available image in its default application or open its folder in Explorer.
+- Click `画像を取り込む` (Import images) or drop PNG files onto Viewer. For an already recorded absolute path, only empty fields are filled. Identical images at different paths are separate records. Invalid files are skipped while valid files continue to import.
+- Manual import does not infer generation date, duration, or GPU utilization. These records are excluded by date filters. The list displays at most 1,000 jobs.
+
+![Actual Viewer with fictional GPU samples](docs/screenshots/gpu-demo.png)
+
+The GPU samples shown here are fictional. Real samples represent the busiest engine on the GPU adapter selected by physical index. They are not specific to ComfyUI and include activity from other processes.
+
+### Storage and privacy
+
+| Stored data | Location and contents |
+|---|---|
+| Database | `data/gentrace.db`: settings, job IDs, dates, GPU samples, and absolute image paths |
+| Pre-migration backups | Private `.bak` files in `data/backups/`, created with the SQLite Online Backup API |
+| CSV | Only within `exports/`: generation lists and selected GPU samples, UTF-8 with BOM. Generation CSV path columns include absolute paths |
+| Diagnostic logs | `logs/gentrace.log`: 1 MiB with two rotated backups; may include exceptions and paths |
+
+Even though prompt text is not stored, databases, CSV files, logs, local configuration, and actual PNG files may contain personal information. Personal information in filenames or model names can also be stored. Do not attach these files to GitHub or public issues. See [safe handling (Japanese)](SECURITY.md).
+
+GenTrace does not configure automatic startup, services, or registry settings. To uninstall, stop Logger and Viewer, back up any database you need to a private location, and delete the GenTrace folder. Externally stored images remain in place.
+
+### Metadata, database, and errors
+
+The detailed reference documents below are currently in Japanese:
+
+- [Supported metadata and unsupported fields](docs/metadata.md)
+- [Database schema 4, upgrades, and recovery](docs/database.md)
+- [Competition comparison and evidence for claims](docs/competition.md)
+- [Publication checklist and history handling](docs/publication.md)
+- [Dependencies and licenses](THIRD_PARTY_NOTICES.md)
+
+Missing configuration or invalid JSON at startup produces configuration guidance. Database locks, corruption, and insufficient permissions are treated as errors; the database is not automatically deleted. PNG truncation, text-chunk CRC, and oversized compressed metadata are checked, and unknown metadata is skipped. Long-path and missing-file errors are handled individually, but support for every Windows long path or network share is not guaranteed.
+
+History from periods when Logger was stopped, or jobs removed from ComfyUI, cannot be guaranteed recoverable. Matching PNG outputs to jobs can be ambiguous when settings and timestamps overlap. Large libraries, every custom node, and every GPU configuration have not been validated.
+
+### Demo and development checks
+
+Inspect the UI without real data, Stability Matrix, or API access:
+
+```powershell
+python scripts/demo.py
+```
+
+Normal verification:
+
+```powershell
+$env:PYTHONUTF8 = "1"
+.\run_tests.cmd
+python scripts/publication_audit.py
+```
+
+Tests use temporary databases, synthetic PNGs, mock HTTP, and Windows Tk file-drop notifications. They are distinct from verification using a new real generation job. `diagnose.py` detects configuration and initializes the database, so do not use it for a read-only audit. See the [development guide (Japanese)](docs/development.md).
+
+### Versioning
+
+GenTrace uses `x.y.z`: x for breaking changes, y for compatible features, and z for small revisions or fixes. Each set of changes increments the version once, using the largest applicable category, and keeps `VERSION`, `gentrace.__version__`, README, and CHANGELOG consistent. Commits and publication are performed when explicitly requested.
