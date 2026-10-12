@@ -1,6 +1,22 @@
-# GenTrace
+# GenTrace — Generation History for ComfyUI in Stability Matrix
 
-[日本語 / Japanese](#日本語) | [English](#english)
+[English guide](#english) · [日本語ガイド](#日本語) · [Installation](#installation) · [Releases](https://github.com/Curren-Chan/GenTrace/releases)
+
+**Keep track of which model and LoRAs you used, how long each generation took, and what happened to the job—even after you delete the output images.**
+
+GenTrace is a Windows logger and viewer for ComfyUI managed by Stability Matrix. It records generation history locally without changing your generation setup or requiring ComfyUI custom nodes.
+
+- **Review each job:** generation settings, duration, status, and GPU utilization.
+- **Keep your history:** recorded settings and filenames remain after referenced images disappear.
+- **Bring in existing PNGs:** import available metadata, filter records, and export CSV.
+
+**Requirements:** Windows 10/11 · Python 3.11+ with Tkinter and SQLite  
+**Language:** Japanese application UI · English and Japanese README  
+**License:** MIT · **Current version:** 1.1.1
+
+[Get started with the English installation guide →](#installation)
+
+Built by a regular local image-generation user to solve everyday tracking problems.
 
 ## 日本語
 
