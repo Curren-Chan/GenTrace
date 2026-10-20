@@ -118,7 +118,11 @@ class Collector:
         self._emit(
             "gpu",
             available=self.gpu.available,
-            message=("GPUカウンター: 利用可能" if self.gpu.available else f"GPUカウンター: {self.gpu.error}"),
+            message=(
+                f"GPUカウンター: 利用可能（{getattr(self.gpu, 'source_label', '')}）"
+                if self.gpu.available
+                else f"GPUカウンター: {self.gpu.error}"
+            ),
         )
         while not self._stop.is_set():
             cycle_started = time.monotonic()

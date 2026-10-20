@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import unittest
 
-from gentrace.gpu import GpuSampler, aggregate_engine_values
+import os
+
+from gentrace.gpu import GpuSampler, NvmlSampler, _nvml_candidates, aggregate_engine_values, combine_utilization
 
 
 class GpuTests(unittest.TestCase):
@@ -22,6 +24,26 @@ class GpuTests(unittest.TestCase):
         ]
         self.assertEqual(aggregate_engine_values(values, 0), 100.0)
         self.assertEqual(aggregate_engine_values(values, 1), 99.0)
+
+    def test_busiest_source_wins_and_missing_sources_are_ignored(self) -> None:
+        # eGPU: GPU Engine counters see only the iGPU while NVML sees CUDA load.
+        self.assertEqual(combine_utilization(3.6, 82.0), 82.0)
+        self.assertEqual(combine_utilization(None, 40.0), 40.0)
+        self.assertEqual(combine_utilization(55.0, None), 55.0)
+        self.assertIsNone(combine_utilization(None, None))
+
+    @unittest.skipUnless(
+        any(os.path.isfile(path) for path in _nvml_candidates()), "NVIDIA driver not installed"
+    )
+    def test_live_nvml_reads_utilization(self) -> None:
+        sampler = NvmlSampler()
+        try:
+            self.assertTrue(sampler.available, sampler.error)
+            value = sampler.sample()
+            self.assertIsNotNone(value)
+            self.assertTrue(0.0 <= value <= 100.0)
+        finally:
+            sampler.close()
 
     def test_live_counter_initializes_on_windows(self) -> None:
         sampler = GpuSampler(0)

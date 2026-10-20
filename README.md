@@ -12,7 +12,7 @@ GenTrace is a Windows logger and viewer for ComfyUI managed by Stability Matrix.
 
 **Requirements:** Windows 10/11 · Python 3.11+ with Tkinter and SQLite  
 **Language:** Japanese application UI · English and Japanese README  
-**License:** MIT · **Current version:** 1.1.1
+**License:** MIT · **Current version:** 1.1.2
 
 [Get started with the English installation guide →](#installation)
 
@@ -24,7 +24,7 @@ Built by a regular local image-generation user to solve everyday tracking proble
 
 作者はComfyUI等でローカル画像生成を継続する中で、「どの設定で、いつ、どのくらい時間をかけて生成したか」「画像を整理した後でも生成履歴を確認したい」という不便を感じ、自分のためにGenTraceを作りました。日々の生成履歴とメタデータを管理する実用ツールとして育てています。開発にはAIの支援も利用しています。
 
-現在のバージョン: `1.1.1` / [MIT License](LICENSE)
+現在のバージョン: `1.1.2` / [MIT License](LICENSE)
 
 ![安全なデモデータで表示したViewer](docs/screenshots/viewer-demo.png)
 
@@ -86,7 +86,7 @@ python main.py
 
 ![架空のGPUサンプルを表示した実際のViewer](docs/screenshots/gpu-demo.png)
 
-GPU値は説明用の架空値です。実採取は、選択physical indexのGPUアダプター全体に対する最も忙しいengineの値で、ComfyUI専用の使用率ではありません。他プロセスの負荷も含まれます。
+GPU値は説明用の架空値です。実採取は、選択physical indexのGPUアダプター全体に対する最も忙しいengineの値と、NVIDIA GPUがあればNVML（GPU-Zやnvidia-smiと同じ取得元）のGPU Loadのうち高い方で、ComfyUI専用の使用率ではありません。他プロセスの負荷も含まれます。eGPUなどでタスクマネージャーにCUDA負荷が出ない環境でも、NVMLにより実際の使用率を記録します。
 
 ## 保存とプライバシー
 
@@ -145,7 +145,7 @@ python scripts/publication_audit.py
 
 The author continues to generate images locally with tools such as ComfyUI. GenTrace grew out of practical frustrations: remembering which settings were used, when a job ran, how long it took, and finding that history after organizing the images. It is a tool built for the author's own ongoing generation and metadata management needs. AI assistance is also used during development.
 
-Current version: `1.1.1` / [MIT License](LICENSE)
+Current version: `1.1.2` / [MIT License](LICENSE)
 
 ![Actual Viewer with safe demo data](docs/screenshots/viewer-demo.png)
 
@@ -209,7 +209,7 @@ The application UI currently uses Japanese labels; this bilingual README does no
 
 ![Actual Viewer with fictional GPU samples](docs/screenshots/gpu-demo.png)
 
-The GPU samples shown here are fictional. Real samples represent the busiest engine on the GPU adapter selected by physical index. They are not specific to ComfyUI and include activity from other processes.
+The GPU samples shown here are fictional. Real samples are the higher of the busiest engine on the GPU adapter selected by physical index and, when an NVIDIA GPU is present, the NVML GPU load (the same source GPU-Z and nvidia-smi use). They are not specific to ComfyUI and include activity from other processes. NVML keeps the recorded value accurate even where Task Manager does not show CUDA load, such as with an eGPU.
 
 ### Storage and privacy
 
